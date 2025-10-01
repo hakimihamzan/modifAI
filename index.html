@@ -1796,10 +1796,10 @@ Feedback</div>
                     // --- FAKE AI LOGIC ---
                     let newText = `Based on your request to "${prompt}", I've drafted a new version for you.`;
                      if (prompt.toLowerCase().includes('color') || prompt.toLowerCase().includes('option')) {
-                       newText = "Try beige, sand, or taupe for a sophisticated, minimal look.";
+                       newText = "Based on the client's past projects, they have also agreed to colors like beige, sand, and taupe as they give a sophisticated yet warm look.";
                     }
                     if (prompt.toLowerCase().includes('font')) {
-                        newText = "Try Open Sans Rounded, Comfortaa, or Quicksand — still professional but softer than corporate fonts."
+                        newText = "Try Open Sans Rounded, Comfortaa, or Quicksand — still professional but softer than corporate fonts. The client should be agreeable with this as they have previously used fonts similar to these."
                     }
                     addMessageToChat('ai', newText, true); // true to show the 'Use' button
                     // --- END FAKE AI LOGIC ---
