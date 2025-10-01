@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModifAI - Feedback Queue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #000000;
+            color: #ffffff;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            /* align-items: center; */
+            justify-content: center;
+            padding: 0 20px 20px;
+            /* gap: 10px;
+            font-size: 18px;
+            font-weight: 600; */
+        }
+
+        .logo svg {
+            width: 75%;
+            height: auto;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: #e4a2ef;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .sidebar-department {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #333333;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-department-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #999999;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .department-dropdown {
+            width: 100%;
+            padding: 10px 36px 10px 12px;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            background: #1a1a1a;
+            color: #ffffff;
+            cursor: pointer;
+            appearance: none;
+            transition: all 0.2s;
+        }
+
+        .department-dropdown:hover {
+            border-color: #a2ffe6;
+        }
+
+        .department-dropdown:focus {
+            outline: none;
+            border-color: #a2ffe6;
+        }
+
+        .dropdown-wrapper {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999999;
+            pointer-events: none;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #1a1a1a;
+        }
+
+        .nav-item.active {
+            background: #1a1a1a;
+            border-left: 3px solid #a2ffe6;
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Feedback List */
+        .feedback-list {
+            width: 400px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .list-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .list-title h2 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .badge {
+            background: #f0f0f0;
+            color: #000000;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #ffffff;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #a2ffe6;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666666;
+        }
+
+        .add-feedback-btn {
+            background: #e4a2ef;
+            color: #000000;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-feedback-btn:hover {
+            background: #d88ee3;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 6px 14px;
+            border-radius: 16px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: #000000;
+            color: white;
+        }
+
+        .sort-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #666666;
+        }
+
+        .feedback-items {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .feedback-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .feedback-item:hover {
+            background: #fafafa;
+        }
+
+        .feedback-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid #d88ee3;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .priority-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+
+        .priority-badge-lg {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .received-text {
+            margin-left: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666666;
+        }
+
+        .priority-urgent {
+            background: #efa2a2;
+            color: #000000;
+        }
+
+        .priority-moderate {
+            background: #f4d2ae;
+            color: #000000;
+        }
+
+        .priority-low {
+            background: #91d5c0;
+            color: #000000;
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .item-client {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+
+        .item-preview {
+            font-size: 13px;
+            color: #333333;
+            line-height: 1.4;
+        }
+
+        .item-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .status-progress {
+            background: #f0f0f0;
+            color: #000000;
+        }
+
+        .status-resolved {
+            background: #f0f0f0;
+            color: #000000;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            flex: 1;
+            background: white;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .detail-sub-header {
+            margin-bottom: 10px;
+        }
+
+        .detail-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .detail-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .meta-item label {
+            display: block;
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 4px;
+        }
+
+        .meta-item value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #a2ffe6;
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background: #8ef0d8;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #000000;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-icon-btn {
+            background: transparent;
+            border: none;
+            color: #86868b;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .edit-icon-btn:hover {
+            background: #f5f5f7;
+            color: #000000;
+        }
+
+        .section-content {
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .feedback-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            /* padding-bottom: 10px; */
+        }
+
+        .feedback-tab {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feedback-tab:hover {
+            background: #f0f0f0;
+            color: #000000;
+        }
+
+        .feedback-tab.active {
+            background: #a2ffe6;
+            color: #000000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .feedback-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .comments-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .comment-item {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e4a2ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #000000;
+        }
+
+        .comment-input-wrapper {
+            margin-top: 15px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #a2ffe6;
+        }
+
+        .comment-submit {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #a2ffe6;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .comment-submit:hover {
+            background: #8ef0d8;
+        }
+
+        .feedback-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feedback-message {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.2s;
+        }
+
+        .feedback-message:hover {
+            border-color: #a2ffe6;
+            box-shadow: 0 2px 8px rgba(162, 255, 230, 0.1);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .message-source {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .source-icon {
+            font-size: 16px;
+        }
+
+        .source-label {
+            color: #000000;
+        }
+
+        .message-meta {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .message-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        .message-footer {
+            font-size: 12px;
+            color: #666666;
+            padding-top: 8px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .recommendation {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recommendation-card:hover {
+            border-color: #a2ffe6;
+            box-shadow: 0 2px 8px rgba(162, 255, 230, 0.15);
+        }
+
+        .recommendation-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .recommendation-content {
+            color: #333333;
+            font-size: 14px;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        .recommendation-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .alert {
+            background: #fff3e6;
+            border-left: 4px solid #e4a2ef;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .alert-subtitle {
+            font-size: 14px;
+        }
+
+        .documents {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .document-item:hover {
+            background: #f5f5f7;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .document-icon {
+            width: 36px;
+            height: 36px;
+            background: #000000;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .document-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .document-desc {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .user-profile {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e4a2ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        .feedback-info-tag {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* --- NEW CSS FOR MODAL --- */
+        .modal-backdrop {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .modal-body .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        .modal-body .form-control:focus {
+            outline: none;
+            border-color: #a2ffe6;
+        }
+
+        .modal-divider {
+            border: none;
+            border-top: 1px solid #f0f0f0;
+            margin: 24px 0;
+        }
+
+        .ai-assistant {
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .ai-assistant-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .ai-input-group input:focus {
+            outline: none;
+            border-color: #a2ffe6;
+        }
+
+        .ai-input-group .btn {
+            white-space: nowrap;
+        }
+        
+        .ai-input-group .btn.loading {
+            cursor: not-allowed;
+            background: #e0e0e0;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            background: #fdfdfd;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Styling for the new status badges */
+.recommendation-actions .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.recommendation-actions .status-badge.accepted {
+    background-color: #e6f7f2; /* Light green */
+    color: #0b8058; /* Dark green */
+}
+
+.recommendation-actions .status-badge.rejected {
+    background-color: #f0f0f0; /* Light gray */
+    color: #666666; /* Dark gray */
+}
+
+/* Styling for the card states */
+.recommendation-card.accepted {
+    background-color: #f8fdfb;
+    border-left: 3px solid #91d5c0; /* Accent color */
+}
+
+.recommendation-card.rejected {
+    opacity: 0.65; /* Fade out the card */
+    background-color: #fafafa;
+}
+.recommendation-card.rejected:hover {
+    opacity: 1; /* Bring back to full opacity on hover */
+}
+
+/* Make sure the undo button is aligned properly */
+.recommendation-card.accepted .recommendation-actions {
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Make sure the undo button is aligned properly */
+.recommendation-card.rejected .recommendation-actions {
+    justify-content: space-between;
+    align-items: center;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1360.45 580">
+                <defs>
+                    <style>
+                    .cls-1 {
+                        fill: url(#linear-gradient);
+                    }
+
+                    .cls-2 {
+                        fill: #fff;
+                    }
+                    </style>
+                    <linearGradient id="linear-gradient" x1="66.12" y1="306.77" x2="1278.6" y2="306.77" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#e4a3f0"/>
+                    <stop offset="1" stop-color="#a2ffe7"/>
+                    </linearGradient>
+                </defs>
+                <rect class="cls-1" x="66.12" y="133.3" width="1212.48" height="346.95" rx="173.47" ry="173.47"/>
+                <g>
+                    <path d="M374.53,231.8v175.84h-23.12v-131.12l-58.45,131.12h-16.26l-58.7-131.37v131.37h-23.12v-175.84h24.9l65.05,145.35,65.05-145.35h24.65Z"/>
+                    <path d="M438.94,401.04c-10.59-5.93-18.89-14.36-24.9-25.28-6.01-10.93-9.02-23.59-9.02-37.99s3.09-26.81,9.28-37.74c6.18-10.93,14.61-19.31,25.28-25.16,10.67-5.84,22.62-8.77,35.83-8.77s25.16,2.92,35.83,8.77c10.67,5.84,19.1,14.19,25.28,25.03,6.18,10.84,9.28,23.47,9.28,37.86s-3.18,27.06-9.53,37.99-14.95,19.36-25.79,25.28c-10.84,5.93-22.87,8.89-36.08,8.89s-24.86-2.96-35.45-8.89ZM497.77,383.76c7.28-3.9,13.17-9.74,17.66-17.53,4.49-7.79,6.73-17.28,6.73-28.46s-2.2-20.67-6.61-28.46c-4.41-7.79-10.16-13.59-17.28-17.41-7.12-3.81-14.83-5.72-23.12-5.72s-16.22,1.91-23.25,5.72c-7.03,3.81-12.67,9.62-16.9,17.41-4.24,7.79-6.35,17.28-6.35,28.46s2.07,20.92,6.23,28.71c4.15,7.79,9.7,13.59,16.64,17.41,6.94,3.81,14.57,5.72,22.87,5.72s16.09-1.95,23.38-5.84Z"/>
+                    <path d="M576.29,300.03c5.76-10.76,13.68-19.1,23.76-25.03,10.08-5.93,21.39-8.89,33.92-8.89,10.84,0,20.92,2.5,30.24,7.5,9.31,5,16.43,11.56,21.34,19.69v-73.69h23.38v188.04h-23.38v-26.17c-4.57,8.3-11.35,15.12-20.33,20.46-8.98,5.34-19.48,8-31.51,8s-23.59-3.05-33.67-9.15c-10.08-6.1-18-14.65-23.76-25.67-5.76-11.01-8.64-23.54-8.64-37.61s2.88-26.72,8.64-37.48ZM679.2,310.32c-4.24-7.79-9.95-13.76-17.15-17.91-7.2-4.15-15.12-6.23-23.76-6.23s-16.52,2.03-23.63,6.1c-7.11,4.07-12.79,10-17.03,17.79-4.24,7.79-6.35,16.94-6.35,27.44s2.12,19.95,6.35,27.83c4.23,7.88,9.91,13.89,17.03,18.04,7.12,4.15,14.99,6.23,23.63,6.23s16.56-2.07,23.76-6.23c7.2-4.15,12.92-10.16,17.15-18.04,4.23-7.88,6.35-17.06,6.35-27.57s-2.12-19.65-6.35-27.44Z"/>
+                    <path d="M748.83,241.21c-3.05-3.05-4.57-6.77-4.57-11.18s1.52-8.13,4.57-11.18c3.05-3.05,6.77-4.57,11.18-4.57s7.83,1.52,10.8,4.57c2.96,3.05,4.45,6.78,4.45,11.18s-1.48,8.13-4.45,11.18c-2.97,3.05-6.57,4.57-10.8,4.57s-8.13-1.52-11.18-4.57ZM771.19,268.4v139.25h-23.12v-139.25h23.12Z"/>
+                    <path d="M867.24,287.45h-29.22v120.19h-23.12v-120.19h-18.04v-19.06h18.04v-9.91c0-15.58,4.02-26.98,12.07-34.18,8.04-7.2,20.96-10.8,38.75-10.8v19.31c-10.16,0-17.32,1.99-21.47,5.97-4.15,3.98-6.23,10.55-6.23,19.69v9.91h29.22v19.06Z"/>
+                </g>
+                <circle class="cls-2" cx="1044.88" cy="306.77" r="140.03"/>
+                <g>
+                    <path d="M1111.6,384.21h-133.44v-17.42h133.44v17.42Z"/>
+                    <polygon points="1110.83 297.68 1110.83 277.57 978.16 229.33 978.16 247.71 1007.83 258.43 1022 263.41 1089.39 287.53 1022 311.65 1007.83 316.63 978.16 327.35 978.16 345.73 1110.83 297.68"/>
+                </g>
+                </svg>
+            </div>
+            <div class="sidebar-department">
+                <div class="sidebar-department-label">Department</div>
+                <div class="dropdown-wrapper">
+                    <select class="department-dropdown">
+                        <option value="brand">Brand & Design</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="product">Product Development</option>
+                        <option value="support">Customer Support</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="sales">Sales</option>
+                    </select>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+            <div class="nav-item active">
+                <span class="nav-icon">
+                   <svg
+  width="19"
+  height="19"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path d="M17 9H7V7H17V9Z" fill="currentColor" />
+  <path d="M7 13H17V11H7V13Z" fill="currentColor" />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M2 18V2H22V18H16V22H14C11.7909 22 10 20.2091 10 18H2ZM12 16V18C12 19.1046 12.8954 20 14 20V16H20V4H4V16H12Z"
+    fill="currentColor"
+  />
+</svg>
+                </span>
+                <span>Feedback Queue</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon"><svg
+  width="20"
+  height="20"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M11 14.9861C11 15.5384 11.4477 15.9861 12 15.9861C12.5523 15.9861 13 15.5384 13 14.9861V7.82831L16.2428 11.0711L17.657 9.65685L12.0001 4L6.34326 9.65685L7.75748 11.0711L11 7.82854V14.9861Z"
+    fill="currentColor"
+  />
+  <path
+    d="M4 14H6V18H18V14H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V14Z"
+    fill="currentColor"
+  />
+</svg>
+</span>
+                <span>Upload Content</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon"><svg
+  width="20"
+  height="20"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M14.8284 12L16.2426 13.4142L19.071 10.5858C20.6331 9.02365 20.6331 6.49099 19.071 4.9289C17.509 3.3668 14.9763 3.3668 13.4142 4.9289L10.5858 7.75732L12 9.17154L14.8284 6.34311C15.6095 5.56206 16.8758 5.56206 17.6568 6.34311C18.4379 7.12416 18.4379 8.39049 17.6568 9.17154L14.8284 12Z"
+    fill="currentColor"
+  />
+  <path
+    d="M12 14.8285L13.4142 16.2427L10.5858 19.0711C9.02372 20.6332 6.49106 20.6332 4.92896 19.0711C3.36686 17.509 3.36686 14.9764 4.92896 13.4143L7.75739 10.5858L9.1716 12L6.34317 14.8285C5.56212 15.6095 5.56212 16.8758 6.34317 17.6569C7.12422 18.4379 8.39055 18.4379 9.1716 17.6569L12 14.8285Z"
+    fill="currentColor"
+  />
+  <path
+    d="M14.8285 10.5857C15.219 10.1952 15.219 9.56199 14.8285 9.17147C14.4379 8.78094 13.8048 8.78094 13.4142 9.17147L9.1716 13.4141C8.78107 13.8046 8.78107 14.4378 9.1716 14.8283C9.56212 15.2188 10.1953 15.2188 10.5858 14.8283L14.8285 10.5857Z"
+    fill="currentColor"
+  />
+</svg>
+</span>
+                <span>Integrations</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon"><svg
+  width="20"
+  height="20"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M22.775 8C22.9242 8.65461 23 9.32542 23 10H14V1C14.6746 1 15.3454 1.07584 16 1.22504C16.4923 1.33724 16.9754 1.49094 17.4442 1.68508C18.5361 2.13738 19.5282 2.80031 20.364 3.63604C21.1997 4.47177 21.8626 5.46392 22.3149 6.55585C22.5091 7.02455 22.6628 7.5077 22.775 8ZM20.7082 8C20.6397 7.77018 20.5593 7.54361 20.4672 7.32122C20.1154 6.47194 19.5998 5.70026 18.9497 5.05025C18.2997 4.40024 17.5281 3.88463 16.6788 3.53284C16.4564 3.44073 16.2298 3.36031 16 3.2918V8H20.7082Z"
+    fill="currentColor"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M1 14C1 9.02944 5.02944 5 10 5C10.6746 5 11.3454 5.07584 12 5.22504V12H18.775C18.9242 12.6546 19 13.3254 19 14C19 18.9706 14.9706 23 10 23C5.02944 23 1 18.9706 1 14ZM16.8035 14H10V7.19648C6.24252 7.19648 3.19648 10.2425 3.19648 14C3.19648 17.7575 6.24252 20.8035 10 20.8035C13.7575 20.8035 16.8035 17.7575 16.8035 14Z"
+    fill="currentColor"
+  />
+</svg>
+</span>
+                <span>Analytics</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13v-2a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L14 4.757V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L4.929 6.343a1 1 0 0 0 0 1.414l.536.536L4.757 10H4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0 1.414l1.414 1.414a1 1 0 0 0 1.414 0l.536-.535 1.707.707V20a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H20a1 1 0 0 0 1-1Z"/>
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+</svg>
+</span>
+                <span>Settings</span>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar">SC</div>
+                <div class="user-info">
+                    <div class="user-name">Sarah Chen</div>
+                    <div class="user-role">Designer</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="feedback-list">
+                <div class="list-header">
+                    <div class="list-title">
+                        <h2>Feedback Queue</h2>
+                        <span class="badge">1 pending • 1 urgent</span>
+                    </div>
+                    <div class="search-bar">
+                        <div class="search-wrapper">
+                            <span class="search-icon"><svg
+  width="14"
+  height="14"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M18.319 14.4326C20.7628 11.2941 20.542 6.75347 17.6569 3.86829C14.5327 0.744098 9.46734 0.744098 6.34315 3.86829C3.21895 6.99249 3.21895 12.0578 6.34315 15.182C9.22833 18.0672 13.769 18.2879 16.9075 15.8442C16.921 15.8595 16.9351 15.8745 16.9497 15.8891L21.1924 20.1317C21.5829 20.5223 22.2161 20.5223 22.6066 20.1317C22.9971 19.7412 22.9971 19.1081 22.6066 18.7175L18.364 14.4749C18.3493 14.4603 18.3343 14.4462 18.319 14.4326ZM16.2426 5.28251C18.5858 7.62565 18.5858 11.4246 16.2426 13.7678C13.8995 16.1109 10.1005 16.1109 7.75736 13.7678C5.41421 11.4246 5.41421 7.62565 7.75736 5.28251C10.1005 2.93936 13.8995 2.93936 16.2426 5.28251Z"
+    fill="currentColor"
+  />
+</svg></span>
+                            <input type="text" class="search-input" placeholder="Search feedback...">
+                        </div>
+                        <button class="add-feedback-btn">
+                            <span>+</span>
+                            <span>Add Feedback</span>
+                        </button>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="tab active">All</button>
+                        <button class="tab">Pending</button>
+                        <button class="tab">In Progress</button>
+                        <button class="tab">Resolved</button>
+                    </div>
+                    <div class="sort-control">
+                        <span>Sort by Priority</span>
+                        <span>▼</span>
+                    </div>
+                </div>
+                <div class="feedback-items">
+                    <div class="feedback-item active">
+                        <div class="item-header">
+                            <span class="priority-badge priority-urgent">URGENT</span>
+                            <span class="item-meta">2 hours ago ▲</span>
+                        </div>
+                        <div class="item-title">Logo color conflicts with brand guidelines</div>
+                        <div class="item-client">Client: Marcus Johnson • Project: Brand Redesign</div>
+                        <div class="item-preview">"The blue doesn't feel right, maybe something warmer? Also the font seems too corporate..."</div>
+                        <div class="item-footer">
+                            <span class="feedback-info-tag"><svg
+  width="12"
+  height="12"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12ZM14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z"
+    fill="currentColor"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M12 3C17.5915 3 22.2898 6.82432 23.6219 12C22.2898 17.1757 17.5915 21 12 21C6.40848 21 1.71018 17.1757 0.378052 12C1.71018 6.82432 6.40848 3 12 3ZM12 19C7.52443 19 3.73132 16.0581 2.45723 12C3.73132 7.94186 7.52443 5 12 5C16.4756 5 20.2687 7.94186 21.5428 12C20.2687 16.0581 16.4756 19 12 19Z"
+    fill="currentColor"
+  />
+</svg>2 comments</span>
+                            <span class="feedback-info-tag"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+</svg>
+ Contradicts previous feedback</span>
+                        </div>
+                    </div>
+
+                    <div class="feedback-item">
+                        <div class="item-header">
+                            <span class="priority-badge priority-moderate">MODERATE</span>
+                            <span class="item-meta">4 hours ago</span>
+                        </div>
+                        <div class="item-title">Website layout needs mobile optimization</div>
+                        <div class="item-client">Client: TechStart Inc • Project: Website Redesign</div>
+                        <div class="item-preview">"The desktop version is great, but mobile version is cramped. Can we make it more spacious?"</div>
+                        <div class="item-footer">
+                            <span class="status-badge status-progress"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
+</svg>
+ In Progress</span>
+                        </div>
+                    </div>
+
+                    <div class="feedback-item">
+                        <div class="item-header">
+                            <span class="priority-badge priority-low">LOW</span>
+                            <span class="item-meta">1 day ago</span>
+                        </div>
+                        <div class="item-title">Brochure copy adjustments needed</div>
+                        <div class="item-client">Client: Green Valley Resort • Project: Marketing Materials</div>
+                        <div class="item-preview">"Love this design! Could we tweak the headline to be more engaging?"</div>
+                        <div class="item-footer">
+                            <span class="status-badge status-resolved">✓ Resolved</span>
+                        </div>
+                    </div>
+
+                    </div>
+            </div>
+
+            <div class="detail-panel">
+                <div class="detail-header">
+                    <div>
+                        <div class="detail-sub-header">
+                            <span class="priority-badge-lg priority-urgent">URGENT</span>
+                            <span class="received-text">Received 2 hours ago</span>
+                        </div>
+                        <h1 class="detail-title">Logo color conflicts with brand guidelines</h1>
+                        <div class="detail-meta">
+                            <div class="meta-item">
+                                <label>Client</label>
+                                <value>Marcus Johnson</value>
+                            </div>
+                            <div class="meta-item">
+                                <label>Project</label>
+                                <value>Brand Redesign</value>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14v7M5 4.971v9.541c5.6-5.538 8.4 2.64 14-.086v-9.54C13.4 7.61 10.6-.568 5 4.97Z"/>
+</svg>
+<span>Change Priority</span></button>
+                        <button class="btn btn-primary"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+</svg>
+<span>Mark Resolved</span></button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <div class="section-title-left"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V8a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1Zm0 0v2a4 4 0 0 1-4 4H5m14-6V8a1 1 0 0 0-1-1h-3a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1Zm0 0v2a4 4 0 0 1-4 4h-1"/>
+</svg>
+
+Feedback</div>
+                        <button class="edit-icon-btn">
+                            <span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+</svg></span>
+                            <span>Edit</span>
+                        </button>
+                    </div>
+                    
+                    <div data-tab-group="feedback">
+                        <div class="feedback-tabs">
+                            <button class="feedback-tab active" data-tab="email-tab" onclick="switchTab('feedback', 'email-tab')">
+                                Email
+                            </button>
+                            <button class="feedback-tab" data-tab="slack-tab" onclick="switchTab('feedback', 'slack-tab')">
+                                Slack
+                            </button>
+                            <button class="feedback-tab" data-tab="whatsapp-tab" onclick="switchTab('feedback', 'whatsapp-tab')">
+                                WhatsApp
+                            </button>
+                            <button class="feedback-tab" data-tab="phone-tab" onclick="switchTab('feedback', 'phone-tab')">
+                                Phone
+                            </button>
+                            <button class="feedback-tab" data-tab="comments-tab" onclick="switchTab('feedback', 'comments-tab')">
+                                Team Comments
+                            </button>
+                        </div>
+
+                        <div id="email-tab" class="tab-content active">
+                            <div class="feedback-messages">
+                                <div class="feedback-message">
+                                    <div class="message-header">
+                                        <div class="message-meta">Jan 16, 2025 2:30 PM</div>
+                                    </div>
+                                    <div class="message-content">
+                                        "The blue doesn't feel right, maybe something warmer? Also the font seems too corporate for our brand. We want more approachable and friendly. Can we explore some alternatives?"
+                                    </div>
+                                    <div class="message-footer">
+                                        Marcus Johnson • marcus@company.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="slack-tab" class="tab-content">
+                            <div class="feedback-messages">
+                                <div class="feedback-message">
+                                    <div class="message-header">
+                                        <div class="message-meta">Jan 16, 2025 3:15 PM</div>
+                                    </div>
+                                    <div class="message-content">
+                                        "Following up on my earlier email - I showed the logo to the team and they agreed the blue feels too cold. We're thinking orange or coral might work better with our brand personality."
+                                    </div>
+                                    <div class="message-footer">
+                                        Marcus Johnson • #brand-redesign
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="whatsapp-tab" class="tab-content">
+                            <div class="feedback-messages">
+                                <div class="feedback-message">
+                                    <div class="message-header">
+                                        <div class="message-meta">Jan 16, 2025 4:45 PM</div>
+                                    </div>
+                                    <div class="message-content">
+                                        "Just checking - are we still on track for the revisions? The warm color palette idea sounds great!"
+                                    </div>
+                                    <div class="message-footer">
+                                        Marcus Johnson • Personal
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="phone-tab" class="tab-content">
+                            <div class="feedback-messages">
+                                <div class="feedback-message">
+                                    <div class="message-header">
+                                        <div class="message-meta">Jan 16, 2025 4:00 PM</div>
+                                    </div>
+                                    <div class="message-content">
+                                        "During our call, Marcus mentioned that the CEO specifically requested warmer tones and a friendlier typeface. Budget approved for additional iterations."
+                                    </div>
+                                    <div class="message-footer">
+                                        Sarah Chen • Meeting Notes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="comments-tab" class="tab-content">
+                            <div class="comments-section">
+                                <div class="comment-item">
+                                    <div class="comment-header">
+                                        <div class="comment-author">
+                                            <div class="comment-avatar">SC</div>
+                                            <span>Sarah Chen</span>
+                                        </div>
+                                        <div class="comment-time">2 hours ago</div>
+                                    </div>
+                                    <div class="comment-text">
+                                        I agree with the client's feedback. The current blue (#2C5AA0) is quite corporate. I'm thinking we could explore warmer alternatives like coral (#FF6B6B) or sunset orange (#FF8C42). These would align better with their friendly brand personality.
+                                    </div>
+                                </div>
+
+                                <div class="comment-item">
+                                    <div class="comment-header">
+                                        <div class="comment-author">
+                                            <div class="comment-avatar">JD</div>
+                                            <span>James Davis</span>
+                                        </div>
+                                        <div class="comment-time">1 hour ago</div>
+                                    </div>
+                                    <div class="comment-text">
+                                        Good points! For the typography, maybe we can look at rounded sans-serifs like Lexend or Commissioner? They're modern but approachable.
+                                    </div>
+                                </div>
+
+                                <div class="comment-input-wrapper">
+                                    <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+                                    <button class="comment-submit">Post Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <div class="section-title-left">
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 580 580">
+  <path d="M441.26,472.99H125.94v-41.17h315.32v41.17Z"/>
+  <polygon points="439.45 268.51 439.45 221.01 125.94 107.01 125.94 150.44 196.06 175.77 229.54 187.54 388.78 244.54 229.54 301.54 196.06 313.3 125.94 338.64 125.94 382.06 439.45 268.51"/>
+</svg>
+
+ ModifAI's Interpretation & Recommendations</div>
+                    </div>
+                    
+                    <div class="recommendations-grid">
+                        <div class="recommendation-card">
+                            <div class="recommendation-header">
+                                Color Adjustment
+                            </div>
+                            <div class="recommendation-content">
+                                Client wants warmer colors instead of blue. Suggests exploring orange, red, or warm yellow tones.
+                            </div>
+                            <div class="recommendation-actions">
+                                <button class="btn btn-primary btn-small">Accept</button>
+                                <button class="btn btn-secondary btn-small btn-modify"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 580 580">
+  <path d="M441.26,472.99H125.94v-41.17h315.32v41.17Z"/>
+  <polygon points="439.45 268.51 439.45 221.01 125.94 107.01 125.94 150.44 196.06 175.77 229.54 187.54 388.78 244.54 229.54 301.54 196.06 313.3 125.94 338.64 125.94 382.06 439.45 268.51"/>
+</svg>
+                                Modify   
+                                </button>
+                                <button class="btn btn-secondary btn-small">Reject</button>
+                            </div>
+                        </div>
+
+                        <div class="recommendation-card accepted">
+                            <div class="recommendation-header">
+                                Typography Change
+                            </div>
+                            <div class="recommendation-content">
+                                Replace corporate font with more approachable, friendly typeface. Suggests using a rounded or serif option.
+                            </div>
+                            <div class="recommendation-actions">
+                                <span class="status-badge accepted">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
+                                    </svg>
+                                    Accepted
+                                </span>
+                                <button class="btn btn-secondary btn-small btn-undo">Undo</button>
+                            </div>
+                        </div>
+
+                        <div class="recommendation-card rejected">
+                            <div class="recommendation-header">
+                                Layout Simplification
+                            </div>
+                            <div class="recommendation-content">
+                                Consider simplifying the logo layout to enhance friendliness and approachability.
+                            </div>
+                            <div class="recommendation-actions">
+                                <span class="status-badge rejected">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+            </svg>
+            Rejected
+        </span>
+        <button class="btn btn-secondary btn-small btn-undo">Undo</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert">
+                        <div class="alert-title">
+                            <span>
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                            </span>
+                            <span>Contradiction Alert</span>
+                        </div>
+                        <div class="alert-subtitle">This feedback contradicts previous color approval of blue color scheme from Jan 10, 2025.</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <div class="section-title-left"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+</svg>
+ Related Documents</div>
+                        <button class="edit-icon-btn">
+                            <span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+</svg>
+</span>
+                            <span>Edit</span>
+                        </button>
+                    </div>
+                    <div class="documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-details">
+                                    <div class="document-name">Email Thread</div>
+                                    <div class="document-desc">Brand Redesign Feedback • Marcus Johnson</div>
+                                </div>
+                            </div>
+                            <span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+</svg></span>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-details">
+                                    <div class="document-name">Logo_v3_current.png</div>
+                                    <div class="document-desc">Current logo version</div>
+                                </div>
+                            </div>
+                            <span><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
+</svg>
+    </span>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-details">
+                                    <div class="document-name">Brand_Guidelines.pdf</div>
+                                    <div class="document-desc">Original brand guidelines</div>
+                                </div>
+                            </div>
+                            <span><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+</svg></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modify-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>ModifAI Recommendation</h2>
+                <button class="close-modal-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="recommendation-text">Recommendation</label>
+                    <textarea id="recommendation-text" class="form-control" rows="4"></textarea>
+                </div>
+                <hr class="modal-divider">
+                <div class="ai-assistant">
+                    <div class="ai-assistant-header">
+                        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 580 580">
+                            <path d="M441.26,472.99H125.94v-41.17h315.32v41.17Z"/>
+                            <polygon points="439.45 268.51 439.45 221.01 125.94 107.01 125.94 150.44 196.06 175.77 229.54 187.54 388.78 244.54 229.54 301.54 196.06 313.3 125.94 338.64 125.94 382.06 439.45 268.51"/>
+                        </svg>
+                        <span>Refine with ModifAI</span>
+                    </div>
+                    <div class="ai-input-group">
+                        <input id="ai-prompt-input" type="text" placeholder="e.g., 'I would like to explore other options...'">
+                        <button id="ai-generate-btn" class="btn btn-secondary">Generate</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+                <button id="save-btn" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- Existing Script ---
+        function switchTab(tabGroup, tabName) {
+            const tabs = document.querySelectorAll(`[data-tab-group="${tabGroup}"] .feedback-tab`);
+            const contents = document.querySelectorAll(`[data-tab-group="${tabGroup}"] .tab-content`);
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[data-tab-group="${tabGroup}"] [data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        // --- New Script for Modal Functionality ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default active tabs
+            switchTab('feedback', 'email-tab');
+
+            // --- Modal Variables ---
+            const modal = document.getElementById('modify-modal');
+            const closeModalBtn = modal.querySelector('.close-modal-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const modifyBtns = document.querySelectorAll('.btn-modify');
+            const recommendationTextarea = document.getElementById('recommendation-text');
+            const aiPromptInput = document.getElementById('ai-prompt-input');
+            const aiGenerateBtn = document.getElementById('ai-generate-btn');
+            
+            let activeRecommendationCard = null;
+
+            // --- Functions to open and close modal ---
+            const openModal = () => {
+                if (!modal) return;
+                modal.style.display = 'flex';
+            };
+
+            const closeModal = () => {
+                if (!modal) return;
+                modal.style.display = 'none';
+                activeRecommendationCard = null; // Clear the active card
+            };
+
+            // --- Event Listeners ---
+
+            // Open modal when any "Modify" button is clicked
+            modifyBtns.forEach(btn => {
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent other click events
+                    activeRecommendationCard = btn.closest('.recommendation-card');
+                    if (activeRecommendationCard) {
+                        const contentElement = activeRecommendationCard.querySelector('.recommendation-content');
+                        recommendationTextarea.value = contentElement.textContent.trim();
+                        openModal();
+                    }
+                });
+            });
+
+            // Close modal events
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (event) => {
+                // Close if clicked on the backdrop itself
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Save changes event
+            saveBtn.addEventListener('click', () => {
+                if (activeRecommendationCard) {
+                    const contentElement = activeRecommendationCard.querySelector('.recommendation-content');
+                    contentElement.textContent = recommendationTextarea.value;
+                    closeModal();
+                }
+            });
+
+            // AI Generate button event (with simulation)
+            aiGenerateBtn.addEventListener('click', () => {
+                const prompt = aiPromptInput.value.trim();
+                const currentText = recommendationTextarea.value;
+
+                if (!prompt) return;
+
+                // Simulate loading state
+                aiGenerateBtn.disabled = true;
+                aiGenerateBtn.textContent = 'Generating...';
+                aiGenerateBtn.classList.add('loading');
+
+                // Simulate a 1-second AI response delay
+                setTimeout(() => {
+                    // --- FAKE AI LOGIC ---
+                    // This is where you would call a real AI API.
+                    // For now, we'll just create a simple, fake response.
+                    let newText = ``;
+                    if (prompt.toLowerCase().includes('options')) {
+                       newText = "Try beige, sand, or taupe for a sophisticated, minimal look.";
+                    }
+                    
+                    recommendationTextarea.value = newText;
+                    // --- END FAKE AI LOGIC ---
+                    
+                    // Reset button state
+                    aiGenerateBtn.disabled = false;
+                    aiGenerateBtn.textContent = 'Generate';
+                    aiGenerateBtn.classList.remove('loading');
+                    aiPromptInput.value = ''; // Clear prompt input
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
