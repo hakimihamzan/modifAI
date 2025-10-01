@@ -874,9 +874,8 @@
             gap: 2px;
         }
 
-        /* --- NEW CSS FOR MODAL --- */
+        /* --- MODAL STYLES --- */
         .modal-backdrop {
-            display: none; /* Hidden by default */
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -884,7 +883,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -895,10 +894,11 @@
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.3s ease-out;
+            max-height: 95vh;
         }
         
         @keyframes fadeIn {
@@ -912,94 +912,102 @@
             align-items: center;
             padding: 16px 24px;
             border-bottom: 1px solid #e0e0e0;
+            flex-shrink: 0;
         }
 
-        .modal-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .close-modal-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-        }
+        .modal-header h2 { font-size: 18px; font-weight: 600; }
+        .close-modal-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; }
 
         .modal-body {
             padding: 24px;
+            overflow-y: auto;
         }
 
-        .modal-body .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: #333;
+        .modal-body .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; color: #333; }
+        .modal-body .form-control { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; resize: vertical; min-height: 100px; font-family: inherit; }
+        .modal-body .form-control:focus { outline: none; border-color: #a2ffe6; }
+        .modal-divider { border: none; border-top: 1px solid #f0f0f0; margin: 24px 0; }
+        
+        .ai-assistant { display: flex; flex-direction: column; background-color: #fafafa; border-radius: 8px; padding: 16px; }
+        .ai-assistant-header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; margin-bottom: 12px; }
+        
+        /* --- NEW CHAT HISTORY STYLES --- */
+        #ai-chat-history {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
         }
 
-        .modal-body .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
+        .chat-message {
+            padding: 10px 14px;
+            border-radius: 16px;
+            max-width: 80%;
             font-size: 14px;
-            resize: vertical;
-            min-height: 100px;
-            font-family: inherit;
-        }
-        .modal-body .form-control:focus {
-            outline: none;
-            border-color: #a2ffe6;
+            line-height: 1.5;
         }
 
-        .modal-divider {
+        .user-message {
+            background-color: #e4a2ef;
+            color: #000000;
+            border-bottom-right-radius: 4px;
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background-color: #f0f0f0;
+            color: #000000;
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+        }
+
+        .ai-message .btn-use-suggestion {
+            background: #a2ffe6;
+            color: #000;
             border: none;
-            border-top: 1px solid #f0f0f0;
-            margin: 24px 0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        .ai-message .btn-use-suggestion:hover {
+            background: #8ef0d8;
         }
 
-        .ai-assistant {
-            background-color: #fafafa;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .ai-assistant-header {
+        .loading-indicator {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 12px;
         }
+        .loading-indicator .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #999;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loading-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
 
-        .ai-input-group {
-            display: flex;
-            gap: 8px;
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
         }
-
-        .ai-input-group input {
-            flex: 1;
-            padding: 10px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .ai-input-group input:focus {
-            outline: none;
-            border-color: #a2ffe6;
-        }
-
-        .ai-input-group .btn {
-            white-space: nowrap;
-        }
+        /* --- END NEW STYLES --- */
         
-        .ai-input-group .btn.loading {
-            cursor: not-allowed;
-            background: #e0e0e0;
-        }
+        .ai-input-group { display: flex; gap: 8px; }
+        .ai-input-group input { flex: 1; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; }
+        .ai-input-group input:focus { outline: none; border-color: #a2ffe6; }
+        .ai-input-group .btn { white-space: nowrap; }
+        .ai-input-group .btn:disabled { cursor: not-allowed; background: #e0e0e0; }
         
         .modal-footer {
             display: flex;
@@ -1009,54 +1017,55 @@
             border-top: 1px solid #e0e0e0;
             background: #fdfdfd;
             border-radius: 0 0 8px 8px;
+            flex-shrink: 0;
         }
 
         /* Styling for the new status badges */
-.recommendation-actions .status-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 6px;
-}
+        .recommendation-actions .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
 
-.recommendation-actions .status-badge.accepted {
-    background-color: #e6f7f2; /* Light green */
-    color: #0b8058; /* Dark green */
-}
+        .recommendation-actions .status-badge.accepted {
+            background-color: #e6f7f2; /* Light green */
+            color: #0b8058; /* Dark green */
+        }
 
-.recommendation-actions .status-badge.rejected {
-    background-color: #f0f0f0; /* Light gray */
-    color: #666666; /* Dark gray */
-}
+        .recommendation-actions .status-badge.rejected {
+            background-color: #f0f0f0; /* Light gray */
+            color: #666666; /* Dark gray */
+        }
 
-/* Styling for the card states */
-.recommendation-card.accepted {
-    background-color: #f8fdfb;
-    border-left: 3px solid #91d5c0; /* Accent color */
-}
+        /* Styling for the card states */
+        .recommendation-card.accepted {
+            background-color: #f8fdfb;
+            border-left: 3px solid #91d5c0; /* Accent color */
+        }
 
-.recommendation-card.rejected {
-    opacity: 0.65; /* Fade out the card */
-    background-color: #fafafa;
-}
-.recommendation-card.rejected:hover {
-    opacity: 1; /* Bring back to full opacity on hover */
-}
+        .recommendation-card.rejected {
+            opacity: 0.65; /* Fade out the card */
+            background-color: #fafafa;
+        }
+        .recommendation-card.rejected:hover {
+            opacity: 1; /* Bring back to full opacity on hover */
+        }
 
-/* Make sure the undo button is aligned properly */
-.recommendation-card.accepted .recommendation-actions {
-    justify-content: space-between;
-    align-items: center;
-}
+        /* Make sure the undo button is aligned properly */
+        .recommendation-card.accepted .recommendation-actions {
+            justify-content: space-between;
+            align-items: center;
+        }
 
-/* Make sure the undo button is aligned properly */
-.recommendation-card.rejected .recommendation-actions {
-    justify-content: space-between;
-    align-items: center;
-}
+        /* Make sure the undo button is aligned properly */
+        .recommendation-card.rejected .recommendation-actions {
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -1499,6 +1508,10 @@ Feedback</div>
 </svg>
 
  ModifAI's Interpretation & Recommendations</div>
+ <button class="edit-icon-btn">
+                            <span>+</span>
+                            <span>Add</span>
+                        </button>
                     </div>
                     
                     <div class="recommendations-grid">
@@ -1640,16 +1653,14 @@ Feedback</div>
                 <hr class="modal-divider">
                 <div class="ai-assistant">
                     <div class="ai-assistant-header">
-                        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 580 580">
-                            <path d="M441.26,472.99H125.94v-41.17h315.32v41.17Z"/>
-                            <polygon points="439.45 268.51 439.45 221.01 125.94 107.01 125.94 150.44 196.06 175.77 229.54 187.54 388.78 244.54 229.54 301.54 196.06 313.3 125.94 338.64 125.94 382.06 439.45 268.51"/>
-                        </svg>
+                        <svg width="18" height="18" viewBox="0 0 580 580">...</svg>
                         <span>Refine with ModifAI</span>
                     </div>
-                    <div class="ai-input-group">
-                        <input id="ai-prompt-input" type="text" placeholder="e.g., 'I would like to explore other options...'">
-                        <button id="ai-generate-btn" class="btn btn-secondary">Generate</button>
-                    </div>
+                    <div id="ai-chat-history"></div>
+                    <form id="ai-prompt-form" class="ai-input-group">
+                        <input id="ai-prompt-input" type="text" placeholder="e.g., 'I would like to explore other options...'" autocomplete="off">
+                        <button id="ai-generate-btn" type="submit" class="btn btn-secondary">Send</button>
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1660,7 +1671,6 @@ Feedback</div>
     </div>
     
     <script>
-        console.log("Hello from script.js");
         // --- Existing Script ---
         function switchTab(tabGroup, tabName) {
             const tabs = document.querySelectorAll(`[data-tab-group="${tabGroup}"] .feedback-tab`);
@@ -1675,39 +1685,78 @@ Feedback</div>
         
         // --- New Script for Modal Functionality ---
         document.addEventListener('DOMContentLoaded', function() {
-            // Set default active tabs
-            switchTab('feedback', 'email-tab');
-
-            // --- Modal Variables ---
+            switchTab('feedback', 'email-tab')
+            // Modal Variables
             const modal = document.getElementById('modify-modal');
             const closeModalBtn = modal.querySelector('.close-modal-btn');
             const cancelBtn = document.getElementById('cancel-btn');
             const saveBtn = document.getElementById('save-btn');
             const modifyBtns = document.querySelectorAll('.btn-modify');
             const recommendationTextarea = document.getElementById('recommendation-text');
+            const aiPromptForm = document.getElementById('ai-prompt-form');
             const aiPromptInput = document.getElementById('ai-prompt-input');
             const aiGenerateBtn = document.getElementById('ai-generate-btn');
+            const chatHistoryContainer = document.getElementById('ai-chat-history');
             
             let activeRecommendationCard = null;
 
-            // --- Functions to open and close modal ---
+            // --- Modal Functions ---
             const openModal = () => {
                 if (!modal) return;
+                chatHistoryContainer.innerHTML = ''; // Clear chat history
+                addMessageToChat('ai', 'Hi! How can I help you refine this recommendation?');
                 modal.style.display = 'flex';
             };
 
             const closeModal = () => {
                 if (!modal) return;
                 modal.style.display = 'none';
-                activeRecommendationCard = null; // Clear the active card
+                activeRecommendationCard = null;
             };
 
-            // --- Event Listeners ---
+            // --- Chat Functions ---
+            const addMessageToChat = (sender, text, showButton = false) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'ai-message');
+                
+                const messageText = document.createElement('p');
+                messageText.textContent = text;
+                messageDiv.appendChild(messageText);
 
-            // Open modal when any "Modify" button is clicked
+                if (showButton) {
+                    const useBtn = document.createElement('button');
+                    useBtn.className = 'btn-use-suggestion';
+                    useBtn.textContent = 'Use this suggestion';
+                    messageDiv.appendChild(useBtn);
+                }
+
+                chatHistoryContainer.appendChild(messageDiv);
+                scrollToBottom();
+            };
+
+            const showLoadingIndicator = () => {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.classList.add('chat-message', 'ai-message', 'loading-indicator');
+                loadingDiv.innerHTML = `<div class="dot"></div><div class="dot"></div><div class="dot"></div>`;
+                chatHistoryContainer.appendChild(loadingDiv);
+                scrollToBottom();
+            };
+            
+            const removeLoadingIndicator = () => {
+                const indicator = chatHistoryContainer.querySelector('.loading-indicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            };
+            
+            const scrollToBottom = () => {
+                chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
+            };
+            
+            // --- Event Listeners ---
             modifyBtns.forEach(btn => {
                 btn.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Prevent other click events
+                    event.stopPropagation();
                     activeRecommendationCard = btn.closest('.recommendation-card');
                     if (activeRecommendationCard) {
                         const contentElement = activeRecommendationCard.querySelector('.recommendation-content');
@@ -1717,17 +1766,12 @@ Feedback</div>
                 });
             });
 
-            // Close modal events
             closeModalBtn.addEventListener('click', closeModal);
             cancelBtn.addEventListener('click', closeModal);
             modal.addEventListener('click', (event) => {
-                // Close if clicked on the backdrop itself
-                if (event.target === modal) {
-                    closeModal();
-                }
+                if (event.target === modal) closeModal();
             });
 
-            // Save changes event
             saveBtn.addEventListener('click', () => {
                 if (activeRecommendationCard) {
                     const contentElement = activeRecommendationCard.querySelector('.recommendation-content');
@@ -1736,37 +1780,47 @@ Feedback</div>
                 }
             });
 
-            // AI Generate button event (with simulation)
-            aiGenerateBtn.addEventListener('click', () => {
+            aiPromptForm.addEventListener('submit', (event) => {
+                event.preventDefault();
                 const prompt = aiPromptInput.value.trim();
-                const currentText = recommendationTextarea.value;
-
                 if (!prompt) return;
 
-                // Simulate loading state
+                addMessageToChat('user', prompt);
+                aiPromptInput.value = '';
                 aiGenerateBtn.disabled = true;
-                aiGenerateBtn.textContent = 'Generating...';
-                aiGenerateBtn.classList.add('loading');
+                
+                showLoadingIndicator();
 
-                // Simulate a 1-second AI response delay
                 setTimeout(() => {
+                    removeLoadingIndicator();
                     // --- FAKE AI LOGIC ---
-                    // This is where you would call a real AI API.
-                    // For now, we'll just create a simple, fake response.
-                    let newText = ``;
-                    if (prompt.toLowerCase().includes('options')) {
+                    let newText = `Based on your request to "${prompt}", I've drafted a new version for you.`;
+                     if (prompt.toLowerCase().includes('color') || prompt.toLowerCase().includes('option')) {
                        newText = "Try beige, sand, or taupe for a sophisticated, minimal look.";
                     }
-                    
-                    recommendationTextarea.value = newText;
+                    if (prompt.toLowerCase().includes('font')) {
+                        newText = "Try Open Sans Rounded, Comfortaa, or Quicksand — still professional but softer than corporate fonts."
+                    }
+                    addMessageToChat('ai', newText, true); // true to show the 'Use' button
                     // --- END FAKE AI LOGIC ---
-                    
-                    // Reset button state
                     aiGenerateBtn.disabled = false;
-                    aiGenerateBtn.textContent = 'Generate';
-                    aiGenerateBtn.classList.remove('loading');
-                    aiPromptInput.value = ''; // Clear prompt input
-                }, 1000);
+                }, 1500); // Increased delay for better effect
+            });
+
+            // Event delegation for dynamically created "Use" buttons
+            chatHistoryContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('btn-use-suggestion')) {
+                    const aiMessage = event.target.closest('.ai-message');
+                    const newText = aiMessage.querySelector('p').textContent;
+                    recommendationTextarea.value = newText;
+                    // Optional: highlight the textarea to show it was updated
+                    recommendationTextarea.focus();
+                    recommendationTextarea.style.transition = 'border-color 0.2s';
+                    recommendationTextarea.style.borderColor = '#e4a2ef';
+                    setTimeout(() => {
+                        recommendationTextarea.style.borderColor = '#e0e0e0';
+                    }, 1000);
+                }
             });
         });
     </script>
